@@ -1,0 +1,22 @@
+{
+  "name": "json-server-api",
+  "version": "1.0.0",
+  "description": "A simple JSON Server API for development and prototyping",
+  "main": "server.js",
+  "scripts": {
+    "start": "json-server --watch db.json --port 3000",
+    "dev": "json-server --watch db.json --port 3000 --host localhost",
+    "production": "json-server db.json --port 8080"
+  },
+  "keywords": [
+    "json-server",
+    "api",
+    "mock",
+    "rest"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.3"
+  }
+}

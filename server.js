@@ -1,27 +1,33 @@
-const jsonServer = require("json-server");
-const server = jsonServer.create();
-const router = jsonServer.router("db.json");
-const middlewares = jsonServer.defaults();
+const express = require("express");
+const fs = require("fs").promises; 
+const app = express();
+const port = 5000;
 
-// Set default middlewares (logger, static, cors and no-cache)
-server.use(middlewares);
 
-// Add custom routes before JSON Server router
-server.get("/api/products", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date().toISOString() });
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the E-Commerce Server!");
 });
 
-// Custom middleware for logging requests
-server.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
+// GET all products
+app.get("/api/products", async (req, res, next) => {
+  try {
+    const data = await fs.readFile("db.json", "utf8");
+    const products = JSON.parse(data);
+    res.json(products);
+  } catch (err) {
+    next(err); 
+  }
 });
 
-// Use default router
-server.use("/api", router);
 
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`JSON Server is running on port ${PORT}`);
-  console.log(`Visit: http://localhost:${PORT}/api`);
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong!" });
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
